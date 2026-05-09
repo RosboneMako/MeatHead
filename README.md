@@ -4,12 +4,13 @@
 * Tested on Windows only.
 * Written in Visual C++ 2022.
 * Written for new programmers, not complicated.
-* Version: 1.00
-* Posted: June 27, 2024
+* Version: 2.00
+* Posted: May 9, 2026
 
 VERSION
 ------------------------------------------------------------------
 1.00 - Initial release.
+2.00 - Switch to IR based amp definitions.
 
 DISCLAIMER
 ------------------------------------------------------------------  
@@ -21,46 +22,48 @@ SUMMARY
 ------------------------------------------------------------------
 A Juce/C++ VST written to simulate a guitar amplifier. 
 
-![Demo Image](docs/assets/meatheaddemo.jpg)
+![Demo Image](docs/assets/meatheaddemor2.jpg)
+
+SPECIAL INFORMATION
+------------------------------------------------------------------
+This VST uses Impulse Responses that were created at 48 kHz. The program will sound best at 48.
+Running at 44.1 kHz will shift frequency responses lower and make things sound a little deeper. 
 
 # THEORY OF OPERATION<br />
 This VST is designed to mimic a high gain amplifier. It uses
-a typical OverDrive/Distortion pedal technique of passing the
-guitar signal into a 650 Hz Band Pass filter and then distorting
-the signal. A higher frequency push is added as the midrange filter Q is increased.<br />
+an Impulse Response (IR) to recreate the input frequency response of an amplifier. 
+<br />
 
 The basic signal path is:  
-Signal Thinner -> High Pass Filter -> High Freq Boost -> 650 Hz Bandpass -> Distortion -> 5 Band EQ -> Thump  
+Boom -> Boost -> Amp IR -> Thump/Air -> 5 Band EQ -> Power -> Speaker IR
 
-SIGNAL THINNER  
-As the gain is increased, the noise floor gets louder and louder. Eventually you start to hear things that are not
-supposed to be heard. The thinner reduces the guitar input signal the harder we go into distortion.
+BOOM - HIGH PASS FILTER  
+The higher the gain, the less bass you want going into the distortion stage. This filter defaults to 150 Hz.
 
-HIGH PASS FILTER  
-The higher the gain, the less bass you want going into the distortion stage. This filter is set to 150 Hz to match 
-the 150 Hz of Thump. But a setting of 180, 200, 220 is not unreasonable. Experiment. The more bass present at distortion, the
-more flubby and undefined your sound will be.
-
-HIGH FREQ BOOST  
-This code adds in some high frequency signal as the midrange bandpass filter Q is increased. The higher the Q, the less Lows and High 
-are present. Without this boost, the sound may be to dead and soft. Experiment.
-
-650 HZ BANDPASS FILTER  
-This was selected to give us a honky sounding low mid boost. This works well for 7 string guitars etc. The Q of the filter adjusts the Highs,
-Lows, and the WAH sound. The Q setting is crucial to finding the right sound.
+BOOST  
+Several options are available that have a frequency boosting filter. These are provided to mimic boosts fromusing various pedals.
 
 DISTORTION STAGE  
 The guitar signal is amplified to extreme levels and then clipped. An angled clipping setup is used. It is not necessary, as the
 distortion level is ridiculous. So comment it out and try something else.
 
+4X OVERSAMPLE ANTI-ALIASING
+Clipping signals creates harmonics. These harmonics will surpass the sample rate being used and create alien spaceship sounds called aliasing. 
+To get around this we can calculate samples in between actual samples and apply high frequency filters to limit signals to the usable range.
+
 5 BAND EQ  
-As the distortion goes up, the EQ becomes crucial. For typical 7 string setups, you may want to lower EQ bands 2, 3, and 4. Because the
-bass and highs are the meat and potatoes of the sound. A Low Pass filter is added and sounds good at around 4000-4800 Hz. If it is set to 8000 Hz
-it turns off and lets everything thru.
+As the distortion goes up, the EQ becomes crucial. With enough gain, most amplifiers will sound similar because the bulk of the tone is coming from the EQ and speaker.
+Several speaker IRs and EQs are provided to give a full range of options. High and Low Pass filters are added to dial in the extreme frequencies.
 
 THUMP  
 Thump adds a boosted 150 Hz signal to the sound. A good starting point is to set Thump at around .20 and then adjust the lowest EQ band to taste. Of course,
 there is nothing stopping you from going to 11!
+
+AIR  
+AIR adds a boosted 1500 Hz signal to the sound. A good starting point is to set Air at around .20 and then adjust the higher EQ bands to taste.
+
+POWER
+A fourth gain stage is added to create a thicker power amp distortion sound. 
 
 # NOTED JUCE CODE 
 CLIPPING  
@@ -70,7 +73,7 @@ in the Editor Timer and CLIPPING is posted to the UI if true.
 This is the basic method you would use for VU meters, etc. Set a value in the processor, detect and display it in the editor TIMER.
 
 SINGLE VALUE MONITORING  
-Normally a JUCE slider control is setup to have an associated TEXTBOX object. To give our AMP UI a sleek look we have turned all textboxes off. They are not needed in this VST.
+Normally a JUCE slider control is setup to have an associated TEXTBOX object. To give our AMP UI a sleek look we have turned some textboxes off.
 Instead, we have a single LABEL object on the UI that we fill in with our slider data as it is being edited. 
 
 CUSTOM SLIDER UI  
