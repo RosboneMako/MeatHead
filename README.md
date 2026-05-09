@@ -9,7 +9,7 @@
 
 VERSION
 ------------------------------------------------------------------
-1.00 - Initial release.
+1.00 - Initial release. 
 2.00 - Switch to IR based amp definitions.
 
 DISCLAIMER
