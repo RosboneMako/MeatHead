@@ -1,4 +1,4 @@
-# MakoMeatHead
+# Rosbone MeatHead
 * JUCE VST High Gain Amp Sim
 * Demo JUCE program. Sample code.
 * Tested on Windows only.
@@ -28,6 +28,9 @@ SPECIAL INFORMATION
 ------------------------------------------------------------------
 This VST uses Impulse Responses that were created at 48 kHz. The program will sound best at 48.
 Running at 44.1 kHz will shift frequency responses lower and make things sound a little deeper. 
+
+Watching the Mini Distortion Quick Guide may help in creating the Juce project.
+https://www.youtube.com/watch?v=H_h4Zt-q0Jw
 
 # THEORY OF OPERATION<br />
 This VST is designed to mimic a high gain amplifier. It uses
